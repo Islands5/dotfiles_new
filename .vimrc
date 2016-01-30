@@ -27,6 +27,19 @@ NeoBundle 'kana/vim-submode'
 NeoBundle 'othree/html5.vim'
 NeoBundle 'mopp/autodirmake.vim'
 NeoBundle 'vim-scripts/ruby-matchit'
+NeoBundle 'Lokaltog/vim-easymotion'
+NeoBundle 'scrooloose/nerdtree'
+NeoBundle 'pangloss/vim-javascript'
+NeoBundle 'mxw/vim-jsx'
+NeoBundle 'soramugi/auto-ctags.vim'
+
+" メソッド定義元へのジャンプ
+
+
+" コード補完
+NeoBundle 'Shougo/neocomplcache'
+NeoBundle 'marcus/rsense'
+
 
 " My Bundles here:
 " Refer to |:NeoBundle-examples|.
@@ -70,10 +83,15 @@ let format_allow_over_tw = 1    " ぶら下り可能幅
 " シンタックス
 syntax on
 " 折り返してても一行ずつ移動
-nnoremap j gj
-nnoremap k gk
+noremap j gj
+noremap k gk
 " インクリメンタルサーチをオン
 set incsearch
+" クリップボードとyunkの同期
+set clipboard=unnamed,autoselect
+
+" スワップファイルを作らない
+set noswapfile
 
 "---------------------------------------------------------------------------
 " GUI固有ではない画面表示の設定:
@@ -97,10 +115,16 @@ set cmdheight=2
 set showcmd
 " タイトルバーの表示を消す
 set notitle
+
 "---------------------------------------------------------------------------
 " Neobundle用の設定
 "
-nnoremap <F1> :<C-u>Unite file<CR>
+"
+nnoremap <F1> :NERDTreeToggle<CR>
+nnoremap <F2> :<C-u>Unite buffer<CR>
+nnoremap <F3> g<C-]>
+nnoremap <F4> <C-t>
+nnoremap <F5> :set binary noeol<CR>
 
 " ウインドウサイズ
 call submode#enter_with('winsize', 'n', '', '<C-w>>', '<C-w>>')
@@ -123,3 +147,50 @@ augroup source-vimrc
   autocmd BufWritePost *vimrc source $MYVIMRC | set foldmethod=marker
   autocmd BufWritePost *gvimrc if has('gui_running') source $MYGVIMRC
 augroup END
+
+" easymotionの設定
+nmap s <Plug>(easymotion-s2)
+nmap t <Plug>(easymotion-t2)
+
+" Disable AutoComplPop.
+let g:acp_enableAtStartup = 0
+" Use neocomplcache.
+let g:neocomplcache_enable_at_startup = 1
+" Use smartcase.
+let g:neocomplcache_enable_smart_case = 1
+" Set minimum syntax keyword length.
+let g:neocomplcache_min_syntax_length = 3
+let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
+
+" Define dictionary.
+let g:neocomplcache_dictionary_filetype_lists = {
+    \ 'default' : ''
+    \ }
+
+" Plugin key-mappings.
+inoremap <expr><C-g>     neocomplcache#undo_completion()
+inoremap <expr><C-l>     neocomplcache#complete_common_string()
+
+" Recommended key-mappings.
+" <CR>: close popup and save indent.
+inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+function! s:my_cr_function()
+  return neocomplcache#smart_close_popup() . "\<CR>"
+endfunction
+" <TAB>: completion.
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+" <C-h>, <BS>: close popup and delete backword char.
+inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
+inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
+inoremap <expr><C-y>  neocomplcache#close_popup()
+inoremap <expr><C-e>  neocomplcache#cancel_popup()
+
+let g:rsenseHome = '/usr/local/bin/rsense'
+let g:rsenseUseOmniFunc = 1
+
+if !exists('g:neocomplcache_omni_patterns')
+let g:neocomplcache_omni_patterns = {}
+endif
+let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
+
+let g:auto_ctags = 1

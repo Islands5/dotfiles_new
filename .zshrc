@@ -130,6 +130,7 @@ alias mv='mv -i'
 alias mkdir='mkdir -p'
 
 alias vi='vim'
+alias psv="python -m SimpleHTTPServer"
  
 # sudo の後のコマンドでエイリアスを有効にする
 alias sudo='sudo '
@@ -137,6 +138,11 @@ alias sudo='sudo '
 # グローバルエイリアス
 alias -g L='| less'
 alias -g G='| grep'
+
+# docker
+alias dkm='docker-machine'
+alias dkc='docker-compose'
+alias dkr='docker'
  
 # C で標準出力をクリップボードにコピーする
 # mollifier delta blog : http://mollifier.hatenablog.com/entry/20100317/p1
@@ -173,3 +179,17 @@ eval "$(rbenv init -)"
 
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
+
+### Added by nodebrew
+export PATH=$HOME/.nodebrew/current/bin:$PATH
+
+### Added by pyenv
+export PATH="$HOME/.pyenv/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+
+### Zコマンド
+. /usr/local/etc/profile.d/z.sh
+function _Z_precmd {
+  z --add "$(pwd -P)" 61 }
+precmd_functions=($precmd_functions _Z_precmd)
